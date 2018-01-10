@@ -285,12 +285,16 @@ def redirect_all(executable):
   old_sysout = sys.stdout
   old_syserr = sys.stderr
   Trace("redirecting to %s" % executable)
-  p = subprocess.Popen([executable], stdin=subprocess.PIPE, stdout=old_sysout, stderr=old_syserr)
-  sys.stdout = p.stdin
-  sys.stderr = p.stdin
-  old_sysout.close()
-  global child_process
-  child_process = p
+  try:
+    p = subprocess.Popen([executable], stdin=subprocess.PIPE, stdout=old_sysout, stderr=old_syserr)
+    sys.stdout = p.stdin
+    sys.stderr = p.stdin
+    old_sysout.close()
+    global child_process
+    child_process = p
+  except WindowsError:
+    pass
+
 
 def _SelectCatenate(globalConfig):
   try:
